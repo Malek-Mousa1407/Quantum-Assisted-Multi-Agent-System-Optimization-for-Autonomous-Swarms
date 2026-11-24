@@ -37,6 +37,7 @@ def run_agent_simulation(agents, obstacles):
                 intended_moves[agent.agent_id] = agent.path[idx + 1]
 
 
+
         claimed_positions = {}
         for agent in agents:
             if agent.agent_status == "REACHED":
@@ -50,20 +51,26 @@ def run_agent_simulation(agents, obstacles):
             if (is_occupied or is_contested) and target_cell != agent.current_posistion:
                 conflicting_agent_id = next((aid for aid, pos in claimed_positions.items() if pos == target_cell), None)
                 
+                # Resolves Contested Cells
                 if conflicting_agent_id and conflicting_agent_id < agent.agent_id:
                     print(f"Conflict! Agent {agent.agent_id} yields to Agent {conflicting_agent_id} and holds at {agent.current_posistion}")
                     intended_moves[agent.agent_id] = agent.current_posistion
                     claimed_positions[agent.agent_id] = agent.current_posistion
                     total_yields += 1
+
+                # Resolves Occupied Cells
                 elif not conflicting_agent_id:
                     print(f"Conflict! Agent {agent.agent_id} yields and holds position at {agent.current_posistion}")
                     intended_moves[agent.agent_id] = agent.current_posistion
                     claimed_positions[agent.agent_id] = agent.current_posistion
                     total_yields += 1
+
                 else:
                     claimed_positions[agent.agent_id] = target_cell
             else:
                 claimed_positions[agent.agent_id] = target_cell
+
+
 
         for agent in agents:
             if agent.agent_status == "REACHED":
